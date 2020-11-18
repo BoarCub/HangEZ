@@ -1,0 +1,9 @@
+What genre do you want to see?
+Action and Adventure
+Anime
+Children
+Comedies
+Documentaries
+Drama and Romance
+Horrors and Thrillers
+Science Fiction

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "271147675597",
+    "firebase_url": "https://virtual-hangout-schedule-a1ac8.firebaseio.com",
+    "project_id": "virtual-hangout-schedule-a1ac8",
+    "storage_bucket": "virtual-hangout-schedule-a1ac8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271147675597:android:468a4d789d5393a0d61e84",
+        "android_client_info": {
+          "package_name": "com.timejuice.hangez"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "271147675597-oseta1u42ptrsbql1qudmi7eq1t7e25c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAv6dPwwYbpTrQxixbzxVg6VIQ4h_9IZk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "271147675597-oseta1u42ptrsbql1qudmi7eq1t7e25c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
