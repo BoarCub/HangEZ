@@ -180,7 +180,11 @@ class HomePage extends StatelessWidget {
                   bottom: 20,
                   child: Container(
                       child: new IconButton(
-                    onPressed: () => _scaffoldKey.currentState.openEndDrawer(),
+                    onPressed: () {
+                      print("Group Drawer");
+                      print(appInfo.username);
+                      _scaffoldKey.currentState.openEndDrawer();
+                    },
                     icon: Icon(Icons.group),
                     color: Color(0xff27b4c3),
                     iconSize: 72.0,
@@ -281,7 +285,7 @@ class HomePage extends StatelessWidget {
               //user: snapshot.data,
               ),
           endDrawer: new GroupDrawer(
-            userID: appInfo.username,
+            appInfo: appInfo,
           ),
         );
         //} else {

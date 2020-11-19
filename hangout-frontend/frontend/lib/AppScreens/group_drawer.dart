@@ -5,18 +5,18 @@ import '../ObjectClasses/user.dart';
 import '../ObjectClasses/group.dart';
 import '../HelperClasses/group_label.dart';
 import 'group_home.dart';
+import '../ObjectClasses/appInfo.dart';
 
 class GroupDrawer extends StatefulWidget {
-  GroupDrawer({Key key, this.userID}) : super(key: key);
-
-  final String userID;
+  GroupDrawer({Key key, this.appInfo}) : super(key: key);
+  final AppInfo appInfo;
   _GroupDrawerState createState() => _GroupDrawerState();
 }
 
 class _GroupDrawerState extends State<GroupDrawer> {
   Widget buildPage() {
     return FutureBuilder(
-        future: getGroupData(widget.userID),
+        future: getGroupData(widget.appInfo.username),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
             return Container(
@@ -82,7 +82,7 @@ class _GroupDrawerState extends State<GroupDrawer> {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => GroupPage(
         group: group,
-        //user: widget.user,
+        appInfo: widget.appInfo,
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);

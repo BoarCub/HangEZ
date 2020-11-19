@@ -76,11 +76,13 @@ class DatabaseService{
   postGroupToGroupCollection(String creator, String groupcode, String name, String description) async{
     Map<String, String> groupMap = {"admin": creator, "groupcode": groupcode, "name": name, "description": description};
     Map<String, String> membersMap = {"username": creator};
+    Map<String, dynamic> pollMap = {"creationOrder": 0, "isActive": true, "question": "Example"};
 
     CollectionReference collectionReference = FirebaseFirestore.instance.collection("groups");
 
     collectionReference.add(groupMap).then((documentReference){
       documentReference.collection("members").add(membersMap);
+      documentReference.collection("polls").add(pollMap);
     });
   }
 
@@ -107,6 +109,66 @@ class DatabaseService{
   //Result: new document created in the "users" collection representing the given user
   postUserDetails(map){
     FirebaseFirestore.instance.collection("users").add(map);
+  }
+
+  Future getPollResultsHelper(String groupcode, int pollCreationOrder, int numberOfAnswers) async {
+
+    List<int> votesList = new List.filled(numberOfAnswers, 0);
+    bool isFinished = false;
+
+    FirebaseFirestore.instance.collection("groups").where("groupcode", isEqualTo: groupcode).get().then((groupQuery){
+
+      String groupDocId;
+      groupDocId = groupQuery.docs[0].id;
+
+      DocumentReference groupDocReference;
+      groupDocReference = FirebaseFirestore.instance.collection("groups").doc(groupDocId);
+
+      groupDocReference.collection("polls").where("creationOrder", isEqualTo: pollCreationOrder).get().then((pollsQuery){
+        
+        String pollDocId;
+        pollDocId = pollsQuery.docs[0].id;
+
+        DocumentReference pollDocReference;
+        pollDocReference = FirebaseFirestore.instance.collection("groups").doc(groupDocId).collection("polls").doc(pollDocId);
+
+        int index = 0;
+
+        for(int i = 0; i < numberOfAnswers; i++){
+
+          pollDocReference.collection("votes").where("vote", isEqualTo: i).get().then((votesQuery){
+
+            QuerySnapshot votesSnapshot;
+            votesSnapshot = votesQuery;
+
+            votesList[i] = votesSnapshot.docs.length;
+
+            index++;
+
+            if(index >= numberOfAnswers){
+              isFinished = true;
+            }
+
+          });
+
+        }
+
+      });
+
+    });
+
+    while(!isFinished){
+      await Future.delayed(Duration(microseconds: 50));
+    }
+
+    return votesList;
+
+  }
+
+  Future getPollResults(String groupcode, int pollCreationOrder, int numberOfAnswers) async{
+    List<int> pollResults = await getPollResultsHelper(groupcode, pollCreationOrder, numberOfAnswers);
+
+    return pollResults;
   }
 
   //Used to get a snapshot of the poll in the given groupcode with the given creationOrder

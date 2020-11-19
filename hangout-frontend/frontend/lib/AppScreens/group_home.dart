@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import '../ObjectClasses/user.dart';
 import '../ObjectClasses/group.dart';
+import '../ObjectClasses/appInfo.dart';
+import './poll_page.dart';
 
 class GroupPage extends StatefulWidget {
-  GroupPage({Key key, this.title, this.group}) : super(key: key);
+  GroupPage({Key key, this.title, this.group, this.appInfo}) : super(key: key);
   final String title;
   final Group group;
+  final AppInfo appInfo;
   @override
   _GroupPageState createState() => _GroupPageState();
 }
@@ -125,7 +128,12 @@ class _GroupPageState extends State<GroupPage> {
           // poll channel button
           Container(
             child: RaisedButton(
-              onPressed: () => Navigator.of(context).pushNamed('/poll'),
+              onPressed: (){
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PollPage(group: widget.group, appInfo: widget.appInfo)));
+              },
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(80.0)),
               padding: EdgeInsets.all(0.0),
