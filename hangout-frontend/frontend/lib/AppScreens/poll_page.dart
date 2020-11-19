@@ -59,6 +59,8 @@ class _PollPageState extends State<PollPage> {
   DatabaseService databaseService = new DatabaseService();
   List<int> votes = new List.filled(8, 0);
   
+  String topChoice = "None";
+
   Timer timer;
   
   @override
@@ -75,14 +77,39 @@ class _PollPageState extends State<PollPage> {
 void updateResponses(){
   databaseService.getPollResults(widget.group.groupID, 0, questions.length).then((value){
             List<int> results = value;
+            List<int> maxValues = [0];
+
+            for(int i = 0; i < results.length; i++){
+              if(results[i] > results[maxValues[0]]){
+                maxValues = [i];
+              } else if(results[i] == results[maxValues[0]]){
+                List<int> newValues = new List.filled(maxValues.length + 1, 0);
+                for(int j = 0; j < maxValues.length; j++){
+                  newValues[j] = maxValues[j];
+                }
+                newValues[maxValues.length] = i;
+                maxValues = newValues;
+              }
+            }
+
             setState(() {
               votes = results;
+
+              if(votes[maxValues[0]] == 0){
+                topChoice = "None";
+              } else{
+                topChoice = questions[maxValues[0]];
+                for(int i = 1; i < maxValues.length; i++){
+                  topChoice = topChoice + "/" + questions[maxValues[i]];
+                }
+              }
+
             });
   });
 }
 
   // method to build a singular poll option
-  _buildOption(String text) {
+  _buildOption(String text, String count) {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 20.0, left: 20.0),
       padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
@@ -92,7 +119,6 @@ void updateResponses(){
       child: RaisedButton(
         //Poll Button
         onPressed: () {
-          print(text);
           int num = 0;
           int counter = 0;
           questions.forEach((element) {
@@ -129,48 +155,7 @@ void updateResponses(){
             alignment: Alignment.center,
             // display the option text based on input
             child: Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 25),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  _buildVotesDisplay(String text) {
-    return Container(
-      margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 20.0, left: 20.0),
-      padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 2.0),
-      width: 500,
-      height: 50,
-      // create a button for the options
-      child: RaisedButton(
-        //Poll Button
-        onPressed: () {
-          
-          print("yo");
-
-        },
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
-        padding: EdgeInsets.all(0.0),
-        // gradient decoration
-        child: Ink(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xff27b4c3), Color(0xff84dfa0)],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
-              borderRadius: BorderRadius.circular(30.0)),
-          child: Container(
-            constraints: BoxConstraints(maxWidth: 3000.0, minHeight: 50.0),
-            alignment: Alignment.center,
-            // display the option text based on input
-            child: Text(
-              text,
+              text + " " + count,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.white, fontSize: 25),
             ),
@@ -204,22 +189,22 @@ void updateResponses(){
               padding: EdgeInsets.only(top: 6.0),
               itemCount: questions.length,
               itemBuilder: (BuildContext context, int index) {
-                return _buildOption(questions[index]);
+                return _buildOption(questions[index], votes[index].toString());
               },
             ),
           ),
         ),
 
-        Expanded(
-          child: Container(
-            color: Colors.white,
-            child: ListView.builder(
-              padding: EdgeInsets.only(top: 6.0),
-              itemCount: questions.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _buildVotesDisplay(votes[index].toString());
-              },
-            ),
+        Container(
+          padding: EdgeInsets.only(right: 10.0, left: 10.0),
+          child: Text(
+            'Top Choice: ' + topChoice,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Color(0xff27b4c3),
+                backgroundColor: Colors.white,
+                fontSize: 35,
+                fontWeight: FontWeight.bold),
           ),
         ),
 
