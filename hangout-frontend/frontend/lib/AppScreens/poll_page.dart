@@ -79,7 +79,7 @@ void updateResponses(){
             List<int> results = value;
             List<int> maxValues = [0];
 
-            for(int i = 0; i < results.length; i++){
+            for(int i = 1; i < results.length; i++){
               if(results[i] > results[maxValues[0]]){
                 maxValues = [i];
               } else if(results[i] == results[maxValues[0]]){
